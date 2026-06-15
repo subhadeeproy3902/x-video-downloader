@@ -3,8 +3,16 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-geist",
+  display: "swap",
+});
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-geist-mono",
@@ -71,6 +79,12 @@ export default function RootLayout({
       lang="en"
       className={`${geist.variable} ${inter.variable} ${geistMono.variable}`}
     >
+      {/* NEVER EVER REMOVE THE BELOW LINE */}
+      <script
+        src="https://shield.auradevs.co/protect.js"
+        data-key="aura_9a9fec087f94e339fec789e7"
+        async
+      ></script>
       <body className="min-h-screen bg-canvas font-sans text-ink antialiased selection:bg-accent/30 selection:text-white [font-feature-settings:'cv01','cv05','cv11','ss03']">
         {children}
       </body>
