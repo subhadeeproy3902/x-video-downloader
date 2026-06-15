@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/* DESIGN-framer.md tokens, registered as Tailwind theme tokens so they become
+   real utilities: bg-canvas, text-ink, border-hairline, from-grad-violet, … */
+@theme {
+  /* surfaces */
+  --color-canvas: #090909;
+  --color-surface-1: #141414;
+  --color-surface-2: #1c1c1c;
+  --color-hairline: #262626;
+  --color-hairline-soft: #1a1a1a;
+
+  /* ink */
+  --color-ink: #ffffff;
+  --color-ink-muted: #999999;
+  --color-ink-faint: #6b6b6b;
+
+  /* single chromatic accent */
+  --color-accent: #0099ff;
+  --color-success: #22c55e;
+  --color-coral: #ff5577;
+
+  /* signature gradient anchors (+ deepened ends for the spotlight cards) */
+  --color-grad-violet: #6a4cf5;
+  --color-grad-violet-deep: #2f1d80;
+  --color-grad-magenta: #d44df0;
+  --color-grad-magenta-deep: #7a1f8f;
+  --color-grad-orange: #ff7a3d;
+  --color-grad-orange-deep: #b23d12;
+
+  /* type */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-geist), var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}

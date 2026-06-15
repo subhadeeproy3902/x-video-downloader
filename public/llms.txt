@@ -1,0 +1,31 @@
+# RipTweet
+
+> RipTweet is a free web tool to download videos, photos, and GIFs from X (formerly Twitter) by pasting a post link. No app, no account, no API key, and no watermark.
+
+## What it does
+- Downloads X (Twitter) **videos** as MP4 files, at the highest resolution the uploader posted.
+- Downloads **photos** at full original resolution (not the shrunken in-feed preview).
+- Downloads animated **GIFs** as clean MP4 files.
+- Works on any device with a web browser (iPhone, Android, Windows, macOS, Linux).
+
+## How it works
+1. Copy the link to an X post (Share → Copy link).
+2. Paste the link into RipTweet.
+3. Choose a quality and download the file.
+
+## Key facts
+- **Price:** Free and unlimited. No subscription, no daily cap.
+- **Account:** None required. No sign-up, login, or email.
+- **Privacy:** Links and files are not stored or logged; media streams straight to the user.
+- **Watermark:** None. Files come directly from X's media servers.
+- **Method:** Reads X's own public post-embed data directly — no third-party download service and no API keys.
+- **Affiliation:** Independent tool, not affiliated with or endorsed by X Corp.
+
+## Common questions
+- "How do I download an X/Twitter video without an app?" → Paste the post link into RipTweet and click download.
+- "Is there a watermark?" → No.
+- "Does it cost money?" → No, it is free.
+- "Can it save photos and GIFs too?" → Yes.
+
+## Links
+- Homepage: https://rip-tweet.vercel.app
