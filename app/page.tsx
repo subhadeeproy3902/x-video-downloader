@@ -2,53 +2,65 @@
 import Downloader from "@/utils/downloader";
 import { SITE } from "@/lib/site";
 import { STEPS, FEATURES, SHOWCASE, FAQ } from "@/lib/content";
-import { t, ui, grad } from "@/lib/ui";
+import { t, ui } from "@/lib/ui";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+
+const SHOWCASE_TAGS: Record<string, string[]> = {
+  Videos: ["MP4", "HD", "4K"],
+  Photos: ["Full-res", "Multi-photo"],
+  GIFs: ["MP4", "Loopable"],
+};
 
 export default function Home() {
   return (
     <>
       <StructuredData />
-      {/* ambient violet/magenta glow high on the page (Framer atmosphere) */}
+      {/* warm overhead spotlight — soft ivory/white bloom, no colored hues */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[640px] bg-[radial-gradient(900px_520px_at_50%_-12%,rgba(106,76,245,0.16),transparent_70%),radial-gradient(680px_460px_at_88%_2%,rgba(212,77,240,0.08),transparent_72%)]"
+        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[700px] bg-[radial-gradient(ellipse_1100px_600px_at_50%_-10%,rgba(255,244,205,0.13),transparent_60%)]"
       />
 
       <Nav />
 
       <main id="top">
         {/* ---------------- Hero ---------------- */}
-        <section className={`${ui.shell} pt-16 pb-20 text-center sm:pt-24 sm:pb-28`}>
-          <div className="mx-auto max-w-4xl">
-            <p className={`${t.eyebrow} mb-6 flex items-center justify-center gap-2`}>
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-success" />
-              Free · No sign-up · No watermark
-            </p>
-            <h1 className={t.displayXl}>Rip any video, photo or GIF off X.</h1>
-            <p className={`${t.subhead} mx-auto mt-6 max-w-xl`}>
-              Paste a post link and download the original-quality file — no app, no API, no
-              third-party services. Just the media, in one click.
-            </p>
-          </div>
+        <section className={`${ui.shell} pt-16 pb-20 sm:pt-24 sm:pb-28`}>
+          {/* Trust line */}
+          <p className="mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12px] font-medium tracking-wide text-ink-faint md:justify-start">
+            <span className="flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" />
+              Free
+            </span>
+            <span aria-hidden="true" className="text-white/20">·</span>
+            <span>No sign-up</span>
+            <span aria-hidden="true" className="text-white/20">·</span>
+            <span>No watermark</span>
+          </p>
 
-          <div className="mx-auto mt-10 max-w-2xl">
+          <h1 className={`${t.displayXl} text-center md:text-left`}>
+            Rip any video, photo or GIF off X.
+          </h1>
+
+          <p className={`${t.subhead} mx-auto mt-6 max-w-[500px] text-center md:mx-0 md:text-left`}>
+            Paste a post link and download the original-quality file — no app, no API, no
+            third-party services. Just the media, in one click.
+          </p>
+
+          <div className="mx-auto mt-10 max-w-2xl md:mx-0">
             <Downloader />
           </div>
-
-          <p className={`${t.caption} mx-auto mt-8 max-w-lg`}>
-            Works with X &amp; Twitter links · MP4 video, full-res photos, animated GIFs
-          </p>
         </section>
 
         {/* ---------------- How it works ---------------- */}
         <Section id="how" eyebrow="How it works" title="Three steps. About five seconds.">
           <div className="grid gap-4 md:grid-cols-3">
             {STEPS.map((s, i) => (
-              <div key={s.n} className={`${ui.card} flex flex-col gap-5 p-6`}>
-                <div className="flex items-center justify-between">
-                  <StepArt index={i} />
-                  <span className={`${t.displayMd} tabular-nums text-ink-faint`}>{s.n}</span>
-                </div>
+              <div key={s.n} className={`${ui.card} relative flex flex-col gap-5 p-6`}>
+                <span className="absolute right-5 top-5 font-mono text-[2.5rem] font-bold leading-none tabular-nums text-white/[0.07]">
+                  {s.n}
+                </span>
+                <StepArt index={i} />
                 <div>
                   <h3 className={`${t.headline} mb-1.5`}>{s.title}</h3>
                   <p className={t.body}>{s.body}</p>
@@ -58,33 +70,40 @@ export default function Home() {
           </div>
         </Section>
 
-        {/* ---------------- Showcase (the one gradient moment) ---------------- */}
+        {/* ---------------- Showcase ---------------- */}
         <Section eyebrow="What you can rip" title="Built for every kind of post.">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid divide-y divide-white/[0.12] overflow-hidden rounded-2xl border border-white/[0.12] md:grid-cols-3 md:divide-x md:divide-y-0">
             {SHOWCASE.map((c) => (
-              <article
-                key={c.kind}
-                className={`${ui.spotlight} ${grad[c.tone]} flex min-h-[260px] flex-col justify-between p-7`}
-              >
-                <ShowcaseGlyph kind={c.kind} />
-                <div>
-                  <h3 className={`${t.displayMd} text-white`}>{c.kind}</h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-white/85">{c.body}</p>
+              <div key={c.kind} className="flex flex-col gap-4 p-8 transition-colors hover:bg-accent/[0.04]">
+                <span className="text-accent">
+                  <ShowcaseGlyph kind={c.kind} />
+                </span>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-semibold tracking-tight text-ink">{c.kind}</h3>
+                  <p className={`${t.body} mt-2`}>{c.body}</p>
                 </div>
-              </article>
+                <div className="flex flex-wrap gap-1.5">
+                  {SHOWCASE_TAGS[c.kind].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-white/[0.08] bg-white/[0.05] px-2.5 py-0.5 text-[11px] font-medium text-ink-muted"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </Section>
 
         {/* ---------------- Features ---------------- */}
         <Section eyebrow="Why RipTweet" title="A downloader that respects you.">
-          <div className="grid gap-px overflow-hidden rounded-[20px] border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-white/[0.12] bg-white/[0.12] sm:grid-cols-2">
             {FEATURES.map((f) => (
-              <div key={f.title} className="bg-surface-1 p-6">
-                <span className="mb-4 grid h-9 w-9 place-items-center rounded-full bg-surface-2 text-accent">
-                  <CheckIcon />
-                </span>
-                <h3 className={`${t.headline} mb-1.5 text-[1.1rem]`}>{f.title}</h3>
+              <div key={f.title} className="bg-canvas p-6 transition-colors hover:bg-white/[0.02]">
+                <span className="mb-4 block h-1.5 w-1.5 rounded-full bg-accent" />
+                <h3 className="mb-1.5 text-[15px] font-semibold text-ink">{f.title}</h3>
                 <p className={t.body}>{f.body}</p>
               </div>
             ))}
@@ -92,28 +111,23 @@ export default function Home() {
         </Section>
 
         {/* ---------------- FAQ ---------------- */}
-        <Section id="faq" eyebrow="FAQ" title="Questions, answered." narrow>
-          <div className="mx-auto max-w-3xl">
+        <Section id="faq" eyebrow="FAQ" title="Questions, answered.">
+          <Accordion type="single" collapsible defaultValue="item-0">
             {FAQ.map((item, i) => (
-              <details
-                key={i}
-                className="group border-b border-hairline-soft py-5"
-                {...(i === 0 ? { open: true } : {})}
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
-                  <span className={`${t.headline} text-[1.05rem]`}>{item.q}</span>
-                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-surface-1 text-ink-muted transition-transform duration-200 group-open:rotate-45">
-                    <PlusIcon />
-                  </span>
-                </summary>
-                <p className={`${t.bodyLg} mt-3 max-w-2xl pr-10`}>{item.a}</p>
-              </details>
+              <AccordionItem key={i} value={`item-${i}`}>
+                <AccordionTrigger className="text-[15px] tracking-[-0.01em]">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-[15px] leading-relaxed">
+                  {item.a}
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </Section>
 
         {/* ---------------- Final CTA ---------------- */}
-        <section className={`${ui.shell} py-24 text-center sm:py-32`}>
+        <section className={`${ui.shell} border-t border-white/[0.08] pb-24 pt-14 text-center sm:pb-32 sm:pt-16`}>
           <h2 className={`${t.displayXl} mx-auto max-w-2xl`}>Got a link? Rip it.</h2>
           <p className={`${t.subhead} mx-auto mt-5 max-w-md`}>
             Free, instant, and private. No account, no catch.
@@ -134,7 +148,7 @@ export default function Home() {
 
 function Nav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-hairline-soft bg-canvas/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/8 bg-black/80 backdrop-blur-xl">
       <div className={`${ui.shell} flex h-14 items-center justify-between`}>
         <a href="#top" className="flex items-center gap-2.5" aria-label={`${SITE.name} home`}>
           <Logo />
@@ -142,7 +156,7 @@ function Nav() {
             {SITE.name}
           </span>
         </a>
-        <nav className="hidden items-center gap-7 text-[14px] font-medium text-ink-muted sm:flex">
+        <nav className="hidden items-center gap-6 text-[13px] font-medium text-ink-muted sm:flex">
           <a href="#how" className="transition-colors hover:text-ink">
             How it works
           </a>
@@ -160,10 +174,10 @@ function Nav() {
 
 function Footer() {
   return (
-    <footer className="border-t border-hairline-soft">
+    <footer className="border-t border-white/[0.08]">
       <div className={`${ui.shell} py-14`}>
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-          <div className="max-w-sm">
+          <div className="max-w-xs">
             <div className="flex items-center gap-2.5">
               <Logo />
               <span className="font-display text-[1.05rem] font-semibold tracking-tight">
@@ -172,15 +186,15 @@ function Footer() {
             </div>
             <p className={`${t.body} mt-4`}>{SITE.tagline} Free, private, and watermark-free.</p>
           </div>
-          <nav className="flex gap-16 text-[14px]">
+          <nav className="flex gap-16 text-[13px]">
             <div className="flex flex-col gap-3">
-              <span className={`${t.caption} text-ink-faint`}>Product</span>
-              <a href="#top" className="text-ink-muted hover:text-ink">Downloader</a>
-              <a href="#how" className="text-ink-muted hover:text-ink">How it works</a>
-              <a href="#faq" className="text-ink-muted hover:text-ink">FAQ</a>
+              <span className={`${t.eyebrow}`}>Product</span>
+              <a href="#top" className="text-ink-muted transition-colors hover:text-ink">Downloader</a>
+              <a href="#how" className="text-ink-muted transition-colors hover:text-ink">How it works</a>
+              <a href="#faq" className="text-ink-muted transition-colors hover:text-ink">FAQ</a>
             </div>
             <div className="flex flex-col gap-3">
-              <span className={`${t.caption} text-ink-faint`}>Saves</span>
+              <span className={`${t.eyebrow}`}>Saves</span>
               <span className="text-ink-muted">X videos (MP4)</span>
               <span className="text-ink-muted">Full-res photos</span>
               <span className="text-ink-muted">Animated GIFs</span>
@@ -188,7 +202,7 @@ function Footer() {
           </nav>
         </div>
 
-        <div className="my-10 h-px bg-hairline-soft" />
+        <div className="my-10 h-px bg-white/[0.08]" />
 
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <p className={`${t.caption} max-w-2xl text-ink-faint`}>
@@ -264,7 +278,7 @@ function StepArt({ index }: { index: number }) {
 }
 
 function ShowcaseGlyph({ kind }: { kind: string }) {
-  const s = { width: 30, height: 30, viewBox: "0 0 24 24", fill: "none", stroke: "white", strokeWidth: 1.7 } as const;
+  const s = { width: 32, height: 32, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7 } as const;
   if (kind === "Videos")
     return (
       <svg {...s} aria-hidden>

@@ -1,16 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-geist",
-  display: "swap",
-});
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
   display: "swap",
 });
 const geistMono = Geist_Mono({
@@ -77,7 +72,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${inter.variable} ${geistMono.variable}`}
+      className={`${geist.variable} ${geistMono.variable}`}
     >
       {/* NEVER EVER REMOVE THE BELOW LINE */}
       <script
@@ -85,7 +80,7 @@ export default function RootLayout({
         data-key="aura_9a9fec087f94e339fec789e7"
         async
       ></script>
-      <body className="min-h-screen bg-canvas font-sans text-ink antialiased selection:bg-accent/30 selection:text-white [font-feature-settings:'cv01','cv05','cv11','ss03']">
+      <body className="min-h-screen bg-canvas font-sans text-ink antialiased selection:bg-white/20 [font-feature-settings:'cv01','cv05','cv11','ss03']">
         {children}
       </body>
     </html>
