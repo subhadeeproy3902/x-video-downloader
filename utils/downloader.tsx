@@ -72,7 +72,7 @@ export default function Downloader() {
 
   return (
     <div className="w-full">
-      <form onSubmit={onSubmit} className="flex flex-col gap-3 sm:flex-row">
+      <form onSubmit={onSubmit} aria-label="Download X / Twitter media" className="flex flex-col gap-3 sm:flex-row">
         <div className={`${ui.field} flex-1 py-1`}>
           <LinkIcon />
           <input
@@ -84,6 +84,7 @@ export default function Downloader() {
             autoCapitalize="off"
             spellCheck={false}
             aria-label="X or Twitter post link"
+            aria-describedby="url-hint"
             placeholder="Paste an X / Twitter post link…"
             className="w-full bg-transparent py-2.5 text-base text-ink outline-none placeholder:text-ink-faint"
           />
@@ -123,7 +124,9 @@ export default function Downloader() {
         </button>
       </form>
 
-      <p className={`${t.caption} mt-3`}>We never store your links or files.</p>
+      <p id="url-hint" className={`${t.caption} mt-3`}>
+        Paste any x.com or twitter.com post URL — we never store your links or files.
+      </p>
 
       <div aria-live="polite" className="mt-5">
         {status.state === "error" && <ErrorCard message={status.message} onRetry={reset} />}

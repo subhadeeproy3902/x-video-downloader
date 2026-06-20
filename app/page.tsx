@@ -15,11 +15,29 @@ export default function Home() {
   return (
     <>
       <StructuredData />
-      {/* warm overhead spotlight — soft ivory/white bloom, no colored hues */}
+      {/* overhead spotlight — white core + amber halo, light falling from above */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[700px] bg-[radial-gradient(ellipse_1100px_600px_at_50%_-10%,rgba(255,244,205,0.13),transparent_60%)]"
+        className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[680px]"
+        style={{
+          background: [
+            /* tight hot core — the focal point of the light source */
+            "radial-gradient(ellipse 300px 140px at 50% -3%, rgba(255,252,240,0.13) 0%, transparent 70%)",
+            /* mid beam — white light spreading downward */
+            "radial-gradient(ellipse 620px 320px at 50% -5%, rgba(255,255,255,0.07) 0%, transparent 75%)",
+            /* broad warm-amber halo — the heat spilling out */
+            "radial-gradient(ellipse 1100px 500px at 50% 2%, rgba(255,205,100,0.055) 0%, transparent 68%)",
+          ].join(", "),
+        }}
       />
+
+      {/* skip link — first focusable element, hidden until focused */}
+      <a
+        href="#top"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[200] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-[13px] focus:font-semibold focus:text-black focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
 
       <Nav />
 
@@ -27,7 +45,7 @@ export default function Home() {
         {/* ---------------- Hero ---------------- */}
         <section className={`${ui.shell} pt-16 pb-20 sm:pt-24 sm:pb-28`}>
           {/* Trust line */}
-          <p className="mb-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12px] font-medium tracking-wide text-ink-faint md:justify-start">
+          <p className="mb-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12px] font-medium tracking-wide text-ink-faint md:justify-start">
             <span className="flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" />
               Free
@@ -43,8 +61,7 @@ export default function Home() {
           </h1>
 
           <p className={`${t.subhead} mx-auto mt-6 max-w-[500px] text-center md:mx-0 md:text-left`}>
-            Paste a post link and download the original-quality file — no app, no API, no
-            third-party services. Just the media, in one click.
+            Paste an x.com or twitter.com post link and download the original-quality file — no app, no account, no watermark. One click.
           </p>
 
           <div className="mx-auto mt-10 max-w-2xl md:mx-0">
@@ -56,7 +73,7 @@ export default function Home() {
         <Section id="how" eyebrow="How it works" title="Three steps. About five seconds.">
           <div className="grid gap-4 md:grid-cols-3">
             {STEPS.map((s, i) => (
-              <div key={s.n} className={`${ui.card} relative flex flex-col gap-5 p-6`}>
+              <div key={s.n} className={`${ui.card} relative flex flex-col gap-5 p-6 transition-[border-color,background-color] duration-200 hover:border-white/[0.14] hover:bg-white/[0.05]`}>
                 <span className="absolute right-5 top-5 font-mono text-[2.5rem] font-bold leading-none tabular-nums text-white/[0.07]">
                   {s.n}
                 </span>
@@ -74,7 +91,7 @@ export default function Home() {
         <Section eyebrow="What you can rip" title="Built for every kind of post.">
           <div className="grid divide-y divide-white/[0.12] overflow-hidden rounded-2xl border border-white/[0.12] md:grid-cols-3 md:divide-x md:divide-y-0">
             {SHOWCASE.map((c) => (
-              <div key={c.kind} className="flex flex-col gap-4 p-8 transition-colors hover:bg-accent/[0.04]">
+              <div key={c.kind} className="flex flex-col gap-4 p-8 transition-colors duration-200 hover:bg-white/[0.04]">
                 <span className="text-accent">
                   <ShowcaseGlyph kind={c.kind} />
                 </span>
@@ -101,7 +118,7 @@ export default function Home() {
         <Section eyebrow="Why RipTweet" title="A downloader that respects you.">
           <div className="grid gap-px overflow-hidden rounded-2xl border border-white/[0.12] bg-white/[0.12] sm:grid-cols-2">
             {FEATURES.map((f) => (
-              <div key={f.title} className="bg-canvas p-6 transition-colors hover:bg-white/[0.02]">
+              <div key={f.title} className="bg-canvas p-6 transition-colors duration-200 hover:bg-white/[0.04]">
                 <span className="mb-4 block h-1.5 w-1.5 rounded-full bg-accent" />
                 <h3 className="mb-1.5 text-[15px] font-semibold text-ink">{f.title}</h3>
                 <p className={t.body}>{f.body}</p>
@@ -111,7 +128,7 @@ export default function Home() {
         </Section>
 
         {/* ---------------- FAQ ---------------- */}
-        <Section id="faq" eyebrow="FAQ" title="Questions, answered.">
+        <Section id="faq" eyebrow="FAQ" title="Frequently asked questions.">
           <Accordion type="single" collapsible defaultValue="item-0">
             {FAQ.map((item, i) => (
               <AccordionItem key={i} value={`item-${i}`}>
@@ -119,7 +136,7 @@ export default function Home() {
                   {item.q}
                 </AccordionTrigger>
                 <AccordionContent className="text-[15px] leading-relaxed">
-                  {item.a}
+                  <span className="block max-w-3xl">{item.a}</span>
                 </AccordionContent>
               </AccordionItem>
             ))}
@@ -127,7 +144,7 @@ export default function Home() {
         </Section>
 
         {/* ---------------- Final CTA ---------------- */}
-        <section className={`${ui.shell} border-t border-white/[0.08] pb-24 pt-14 text-center sm:pb-32 sm:pt-16`}>
+        <section className={`${ui.shell} border-t border-white/[0.08] pb-24 pt-14 text-center sm:pb-28 sm:pt-16`}>
           <h2 className={`${t.displayXl} mx-auto max-w-2xl`}>Got a link? Rip it.</h2>
           <p className={`${t.subhead} mx-auto mt-5 max-w-md`}>
             Free, instant, and private. No account, no catch.
@@ -156,7 +173,7 @@ function Nav() {
             {SITE.name}
           </span>
         </a>
-        <nav className="hidden items-center gap-6 text-[13px] font-medium text-ink-muted sm:flex">
+        <nav aria-label="Main navigation" className="hidden items-center gap-6 text-[13px] font-medium text-ink-muted sm:flex">
           <a href="#how" className="transition-colors hover:text-ink">
             How it works
           </a>
@@ -184,9 +201,9 @@ function Footer() {
                 {SITE.name}
               </span>
             </div>
-            <p className={`${t.body} mt-4`}>{SITE.tagline} Free, private, and watermark-free.</p>
+            <p className={`${t.body} mt-4`}>Download X videos, photos, and GIFs in original quality. No account, no watermark, no hassle.</p>
           </div>
-          <nav className="flex gap-16 text-[13px]">
+          <nav aria-label="Footer navigation" className="flex gap-16 text-[13px]">
             <div className="flex flex-col gap-3">
               <span className={`${t.eyebrow}`}>Product</span>
               <a href="#top" className="text-ink-muted transition-colors hover:text-ink">Downloader</a>
@@ -233,7 +250,7 @@ function Section({
 }) {
   return (
     <section id={id} className={`${ui.shell} scroll-mt-20 border-t border-hairline-soft py-20 sm:py-24`}>
-      <div className={`mb-10 ${narrow ? "text-center" : ""}`}>
+      <div className={`mb-8 ${narrow ? "text-center" : ""}`}>
         <p className={`${t.eyebrow} mb-4`}>{eyebrow}</p>
         <h2 className={`${t.displayLg} max-w-2xl ${narrow ? "mx-auto" : ""}`}>{title}</h2>
       </div>
@@ -302,20 +319,6 @@ function ShowcaseGlyph({ kind }: { kind: string }) {
   );
 }
 
-function CheckIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path d="m5 12.5 4.5 4.5L19 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-function PlusIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
 function UpIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">

@@ -6,7 +6,7 @@ export const SITE = {
   url: "https://rip-tweet.vercel.app",
   tagline: "Rip any video, photo or GIF off X.",
   description:
-    "Paste an X (Twitter) post link and download the original-quality video, photo or GIF in one click. Free, no sign-up, no watermark — no API and no third-party services.",
+    "Paste any X (Twitter) post link and download the video, photo, or GIF at original quality. Free, instant, no sign-up, no watermark — just paste and download.",
   keywords: [
     "x video downloader",
     "twitter video downloader",
@@ -18,6 +18,9 @@ export const SITE = {
     "x media downloader",
     "rip tweet",
     "twitter mp4 download",
+    "x.com video downloader",
+    "download video from x",
+    "free twitter video downloader online",
   ],
   author: "RipTweet",
   twitterHandle: "@riptweet",

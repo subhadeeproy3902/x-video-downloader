@@ -25,12 +25,12 @@ export const ui = {
   shell: "mx-auto w-full max-w-[1180px] px-5 sm:px-8",
   card: "rounded-2xl border border-white/[0.08] bg-white/[0.03]",
   field:
-    "flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 transition focus-within:border-accent/50 focus-within:ring-2 focus-within:ring-accent/[0.18]",
+    "flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 transition duration-150 focus-within:border-white/[0.22] focus-within:ring-2 focus-within:ring-white/[0.06]",
   spotlight:
     "relative overflow-hidden rounded-[30px] border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_24px_60px_-28px_rgba(0,0,0,0.85)]",
-  btn: "inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:ring-accent/70 disabled:opacity-45 disabled:pointer-events-none",
-  btnPrimary: "bg-white text-black hover:bg-white/90",
-  btnSecondary: "border border-white/[0.1] bg-transparent text-ink hover:bg-white/[0.06]",
+  btn: "inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition duration-150 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas focus-visible:ring-accent/70 disabled:opacity-45 disabled:pointer-events-none",
+  btnPrimary: "bg-white text-black hover:bg-white/[0.92]",
+  btnSecondary: "border border-white/[0.1] bg-transparent text-ink hover:bg-white/[0.06] hover:border-white/[0.2]",
   btnGhost: "text-ink-muted hover:text-ink",
   linkAccent: "text-accent transition hover:opacity-80",
 };

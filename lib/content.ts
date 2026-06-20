@@ -5,12 +5,12 @@ export const STEPS = [
   {
     n: "01",
     title: "Copy the post link",
-    body: "On X, tap Share → Copy link. Works from the app, the website, anywhere.",
+    body: "Open the post on x.com or twitter.com, tap Share → Copy link. Works from the mobile app too.",
   },
   {
     n: "02",
-    title: "Paste it above",
-    body: "Drop the link in the box. RipTweet reads the post's public media in a blink.",
+    title: "Paste the link",
+    body: "Drop the link into the box. RipTweet fetches the post's public media in seconds.",
   },
   {
     n: "03",
@@ -103,6 +103,6 @@ export const FAQ = [
   },
   {
     q: "How is RipTweet different from other X video downloaders?",
-    a: "It talks directly to X's own public embed data — no third-party download service, no API keys, no ad-laden redirects, and no watermark. It's just a clean, fast, private tool.",
+    a: "RipTweet talks directly to X's own public embed data — no third-party download service, no API keys, no ad-laden redirects, and no watermark. Just paste a link, pick a quality, and download.",
   },
 ] as const;
