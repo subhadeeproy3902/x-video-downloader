@@ -18,6 +18,17 @@ const KIND_LABEL: Record<ResolvedAsset["kind"], string> = {
   gif: "GIF",
 };
 
+/**
+ * Where the preview element currently points.
+ *
+ * "direct" hits X's own CDN (video.twimg.com / pbs.twimg.com) straight on —
+ * fast, and it always serves the right Content-Type, so the browser never
+ * has a reason to refuse it as unplayable. "proxy" is only a fallback for
+ * the rare case the CDN ever blocks hotlinking; it goes through our own
+ * /api/download?mode=inline route instead.
+ */
+type PreviewSource = "direct" | "proxy";
+
 function KindIcon({ kind }: { kind: ResolvedAsset["kind"] }) {
   if (kind === "photo") return <ImageIcon className="h-3.5 w-3.5" aria-hidden="true" />;
   return <VideoIcon className="h-3.5 w-3.5" aria-hidden="true" />;
@@ -54,6 +65,7 @@ function MediaPreviewImpl({ asset, filenameSeed, position, total }: MediaPreview
   const variants = asset.variants ?? [];
   const [variantIndex, setVariantIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [previewSource, setPreviewSource] = useState<PreviewSource>("direct");
   const [loadFailed, setLoadFailed] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const activeVariant: VideoVariant | undefined = variants[variantIndex];
@@ -62,6 +74,7 @@ function MediaPreviewImpl({ asset, filenameSeed, position, total }: MediaPreview
     setVariantIndex(Number(event.target.value));
     setIsPlaying(false);
     setLoadFailed(false);
+    setPreviewSource("direct");
   }, []);
 
   const handlePlayClick = useCallback(() => {
@@ -69,19 +82,41 @@ function MediaPreviewImpl({ asset, filenameSeed, position, total }: MediaPreview
   }, []);
 
   const handlePlayingState = useCallback((playing: boolean) => () => setIsPlaying(playing), []);
-  const handleLoadError = useCallback(() => setLoadFailed(true), []);
+
+  /**
+   * First failure: drop from the direct CDN URL to the proxy, in case the
+   * CDN ever blocks hotlinking. Only surface the "preview failed" state if
+   * the proxy fails too — so a single bad load never strands the user.
+   */
+  const handleLoadError = useCallback(() => {
+    setPreviewSource((current) => {
+      if (current === "direct") return "proxy";
+      setLoadFailed(true);
+      return current;
+    });
+  }, []);
+
   const [justDownloaded, setJustDownloaded] = useState(false);
   const handleDownloadClick = useCallback(() => {
     setJustDownloaded(true);
     window.setTimeout(() => setJustDownloaded(false), 1600);
   }, []);
 
+  const previewUrlFor = useCallback(
+    (remoteUrl: string, seed: string) =>
+      previewSource === "direct" ? remoteUrl : buildDownloadHref(remoteUrl, seed, "inline"),
+    [previewSource],
+  );
+
   const inlineSrc =
     asset.kind === "photo"
-      ? buildDownloadHref(asset.previewUrl, `${filenameSeed}-${asset.id}`, "inline")
+      ? previewUrlFor(asset.previewUrl, `${filenameSeed}-${asset.id}`)
       : activeVariant
-        ? buildDownloadHref(activeVariant.url, `${filenameSeed}-${asset.id}`, "inline")
+        ? previewUrlFor(activeVariant.url, `${filenameSeed}-${asset.id}`)
         : undefined;
+
+  const posterSrc =
+    asset.kind === "video" ? previewUrlFor(asset.previewUrl, `${filenameSeed}-${asset.id}-poster`) : undefined;
 
   const downloadHref = buildDownloadHref(
     asset.kind === "photo" ? asset.previewUrl : (activeVariant?.url ?? asset.previewUrl),
@@ -103,8 +138,9 @@ function MediaPreviewImpl({ asset, filenameSeed, position, total }: MediaPreview
           loadFailed ? (
             <LoadFailure downloadHref={downloadHref} />
           ) : (
-            // eslint-disable-next-line @next/next/no-img-element -- proxied original-resolution image, intentionally unoptimized
+            // eslint-disable-next-line @next/next/no-img-element -- original-resolution image, intentionally unoptimized
             <img
+              key={inlineSrc}
               src={inlineSrc}
               alt="Downloaded post photo"
               className="h-full w-full object-contain"
@@ -120,7 +156,7 @@ function MediaPreviewImpl({ asset, filenameSeed, position, total }: MediaPreview
               ref={videoRef}
               key={inlineSrc}
               src={inlineSrc}
-              poster={asset.kind === "video" ? buildDownloadHref(asset.previewUrl, `${asset.id}-poster`, "inline") : undefined}
+              poster={posterSrc}
               controls
               playsInline
               loop={asset.kind === "gif"}
