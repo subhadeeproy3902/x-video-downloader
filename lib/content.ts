@@ -1,108 +1,103 @@
-// Shared, indexable content. Rendered on the page AND emitted as JSON-LD so
-// search + answer engines (Google, Bing, ChatGPT, Perplexity) read the same facts.
+export interface Step {
+  n: string;
+  title: string;
+  body: string;
+}
 
-export const STEPS = [
+export const STEPS: Step[] = [
   {
-    n: "01",
-    title: "Copy the post link",
-    body: "Open the post on x.com or twitter.com, tap Share → Copy link. Works from the mobile app too.",
-  },
-  {
-    n: "02",
+    n: "1",
     title: "Paste the link",
-    body: "Drop the link into the box. RipTweet fetches the post's public media in seconds.",
+    body: "Copy a post's link from X, the Share icon or the address bar both work, and drop it into the box above.",
   },
   {
-    n: "03",
-    title: "Download the file",
-    body: "Pick a quality and save the original video, photo or GIF straight to your device.",
+    n: "2",
+    title: "Pick a file",
+    body: "RipTweet reads the post and shows only the video, photo, or GIF inside it. Choose a quality if more than one is offered.",
   },
-] as const;
+  {
+    n: "3",
+    title: "Save it",
+    body: "Press download. The file saves straight to your device at its original quality, no extra steps.",
+  },
+];
 
-export const FEATURES = [
-  {
-    title: "Original quality",
-    body: "Every resolution X serves, up to the source file — no re-compression, no quality loss.",
-  },
-  {
-    title: "No watermark",
-    body: "Files come straight from X's own servers. Nothing stamped, branded, or cropped on top.",
-  },
-  {
-    title: "Nothing to install",
-    body: "Runs in your browser on any phone or laptop. No app, no extension, no setup.",
-  },
-  {
-    title: "No sign-up, ever",
-    body: "No account, no email, no login wall. Paste a link and you're done.",
-  },
-  {
-    title: "We store nothing",
-    body: "Links and files pass straight through and vanish. No history, no tracking pixels.",
-  },
-  {
-    title: "Always free",
-    body: "No paywall, no daily cap, no API keys. Rip as many posts as you like.",
-  },
-] as const;
+export interface AssetType {
+  kind: "Video" | "Photo" | "GIF";
+  body: string;
+  tags: string[];
+}
 
-export const SHOWCASE = [
+export const ASSET_TYPES: AssetType[] = [
   {
-    kind: "Videos",
-    tone: "violet" as const,
-    body: "Save any X video as a clean MP4 — from 6-second clips to long uploads — at the highest resolution available.",
+    kind: "Video",
+    body: "Grabs the original MP4 X stored for the post, in every resolution X offers for it, up to 4K when the uploader posted that high.",
+    tags: ["MP4", "Up to 4K"],
   },
   {
-    kind: "Photos",
-    tone: "magenta" as const,
-    body: "Pull full-resolution images, not the shrunken previews. Single shots or an entire photo gallery.",
+    kind: "Photo",
+    body: "Pulls the full-resolution file X has on record, not the cropped, compressed preview your timeline shows.",
+    tags: ["Original resolution", "Multi-photo posts"],
   },
   {
-    kind: "GIFs",
-    tone: "orange" as const,
-    body: "Grab animated GIFs as tidy MP4 files, ready to repost, edit, or drop into a deck.",
+    kind: "GIF",
+    body: "X stores GIFs as silent, looping MP4 files. RipTweet saves them exactly that way, ready for Photos, Slack, or a doc.",
+    tags: ["MP4", "Loops natively"],
   },
-] as const;
+];
 
-export const FAQ = [
+export interface Feature {
+  title: string;
+  body: string;
+}
+
+export const FEATURES: Feature[] = [
   {
-    q: "Is RipTweet free?",
-    a: "Yes — completely free and unlimited. There's no account, no paywall, no daily limit, and no API keys to set up. Paste a link and download.",
+    title: "Original quality, every time",
+    body: "No re-encoding and no extra compression. The file you get is the same one X already hosts on its own servers.",
   },
   {
-    q: "Do I need to install an app or browser extension?",
-    a: "No. RipTweet runs entirely in your web browser. There's nothing to download or install before you can use it.",
+    title: "Nothing else loads",
+    body: "Only the media renders. Not the reply count, not the avatar, not the rest of the timeline sitting around it.",
   },
   {
-    q: "Does it work on iPhone and Android?",
-    a: "Yes. It works in any modern mobile or desktop browser — Safari, Chrome, Firefox, Edge — on phones, tablets, and computers alike.",
+    title: "Runs in your browser",
+    body: "No app to install and no account to create. Paste a link, get a file, close the tab.",
   },
   {
-    q: "Will the downloaded video have a watermark?",
-    a: "No. Files are pulled directly from X's media servers, so they arrive exactly as uploaded — with no watermark and no added branding.",
+    title: "Nothing is kept",
+    body: "RipTweet doesn't store the links you paste or the files you download. Each request lives only as long as it takes to serve it.",
+  },
+];
+
+export interface FaqItem {
+  q: string;
+  a: string;
+}
+
+export const FAQ: FaqItem[] = [
+  {
+    q: "Do I need an X or Twitter account?",
+    a: "No. RipTweet reads public post data the same way X's own embed widget does, so no login or API key is required on your end.",
   },
   {
-    q: "What quality can I download?",
-    a: "Up to the original resolution the poster uploaded. RipTweet lists every available quality (for example 1280×720 and lower) so you can pick the size you want.",
+    q: "Why did my link fail to resolve?",
+    a: "The most common causes: the post is from a protected or suspended account, the post was deleted, the link points to a profile or a reply instead of the post with the media, or the post simply has no video, photo, or GIF attached.",
   },
   {
-    q: "Can I download photos and GIFs too, not just videos?",
-    a: "Yes. RipTweet saves videos as MP4, photos at full original resolution, and animated GIFs as MP4 files. Posts with multiple images are all available.",
+    q: "What's the highest quality I can get?",
+    a: "Whatever the uploader posted. Video tops out at the highest bitrate X stored for that post, commonly 1080p and sometimes 4K. Photos come back at their full original resolution, not the compressed thumbnail shown in a timeline.",
   },
   {
-    q: "Do you store my links or the files I download?",
-    a: "No. Your link is used only to look up the post's public media, and files stream straight through to you. Nothing is logged, saved, or shared.",
+    q: "Does it work on a phone?",
+    a: "Yes. Open the link in your phone's browser, paste the post link, and download. On iOS, Safari prompts you to save the file; on Android, it lands in your Downloads folder.",
   },
   {
-    q: "Why won't some posts download?",
-    a: "Posts that are deleted, from protected or private accounts, age-restricted, or that contain no media can't be fetched. Double-check the link is a public post with a video, photo, or GIF.",
+    q: "Is RipTweet affiliated with X?",
+    a: "No. RipTweet is an independent tool, not affiliated with, endorsed by, or sponsored by X Corp.",
   },
   {
-    q: "Is it legal to download videos from X?",
-    a: "Downloading public media for personal use is generally fine, but you should only download content you have the right to use and respect the original creators' rights and X's Terms of Service. RipTweet is not affiliated with X Corp.",
+    q: "Is it legal to download someone else's post?",
+    a: "Saving a copy for personal use is generally fine. Reposting or redistributing someone else's video or photo without their permission can violate copyright or X's own terms, so get permission before sharing it further.",
   },
-  {
-    q: "How is RipTweet different from other X video downloaders?",
-    a: "RipTweet talks directly to X's own public embed data — no third-party download service, no API keys, no ad-laden redirects, and no watermark. Just paste a link, pick a quality, and download.",
-  },
-] as const;
+];

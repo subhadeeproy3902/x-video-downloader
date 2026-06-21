@@ -1,83 +1,169 @@
 @import "tailwindcss";
 
-/* DESIGN-VISUAL-SPEC tokens, registered as Tailwind theme tokens so they become
-   real utilities: bg-canvas, text-primary, border-default, etc. */
+@custom-variant dark (&:is(.dark *));
+
+/*
+  RipTweet design tokens.
+  Strictly neutral grayscale in both themes: no accent hue anywhere.
+  Registered under @theme so Tailwind generates real utilities
+  (bg-canvas, text-ink, border-line, font-pixel, etc).
+*/
 @theme {
-  /* Surfaces */
-  --color-canvas: #0A0A0A;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+  --font-pixel: var(--font-geist-pixel-square), var(--font-geist-mono), monospace;
+
+  --color-canvas: #fafafa;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #f0f0f0;
+  --color-line: #e2e2e2;
+  --color-line-strong: #cfcfcf;
+  --color-ink: #131313;
+  --color-ink-muted: #6b6b6b;
+  --color-ink-faint: #9a9a9a;
+  --color-invert-bg: var(--color-ink);
+  --color-invert-fg: var(--color-canvas);
+
+  --radius-none: 0px;
+}
+
+/* Dark theme: swap every token, components never branch on theme directly. */
+.dark {
+  --color-canvas: #0a0a0a;
   --color-surface-1: #111111;
-  --color-surface-2: #1a1a1a;
-  --color-surface-3: #1a1a1a;
-  --color-hairline: #262626;
-  --color-hairline-soft: #262626;
-
-  /* Ink/Text */
-  --color-ink: #FAFAFA;
-  --color-ink-muted: #A1A1AA;
-  --color-ink-faint: #A1A1AA;
-
-  /* Accent Colors */
-  --color-accent: #8B5CF6;
-  --color-success: #10B981;
-  --color-coral: #EF4444;
-
-  /* Type Families — use CSS vars set by Next.js font loader, not plain names */
-  --font-sans: var(--font-geist), system-ui, sans-serif;
-  --font-display: var(--font-geist), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-
-  /* Gradient anchors for showcase spotlight cards */
-  --color-grad-violet: #6a4cf5;
-  --color-grad-violet-deep: #2f1d80;
-  --color-grad-magenta: #d44df0;
-  --color-grad-magenta-deep: #7a1f8f;
-  --color-grad-orange: #ff7a3d;
-  --color-grad-orange-deep: #b23d12;
-
-  /* Border Radius */
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --color-surface-2: #161616;
+  --color-line: #242424;
+  --color-line-strong: #343434;
+  --color-ink: #f5f5f5;
+  --color-ink-muted: #9a9a9a;
+  --color-ink-faint: #6e6e6e;
 }
 
-/* Shadow System */
 :root {
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-focus-ring: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  --shadow-focus-ring: 0 0 0 3px color-mix(in oklab, var(--color-ink) 22%, transparent);
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
 }
 
-/* Accordion Animations */
-@keyframes accordion-down {
-  from {
-    opacity: 0;
-    height: 0;
+@layer base {
+  * {
+    border-color: var(--color-line);
   }
-  to {
-    opacity: 1;
-    height: var(--radix-accordion-content-height);
+  html {
+    scroll-behavior: smooth;
   }
-}
-
-@keyframes accordion-up {
-  from {
-    opacity: 1;
-    height: var(--radix-accordion-content-height);
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
-  to {
-    opacity: 0;
-    height: 0;
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-canvas);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
   }
 }
 
 @layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+}
+
+/* Accordion height animation (Radix) */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+@layer utilities {
   .animate-accordion-down {
-    animation: accordion-down 0.15s ease-out;
+    animation: accordion-down 180ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .animate-accordion-up {
-    animation: accordion-up 0.15s ease-out;
+    animation: accordion-up 150ms cubic-bezier(0.4, 0, 1, 1);
+  }
+}
+
+/*
+  Dot-matrix loader keyframes.
+  Technique: a 5x5 grid of square dots, each dot's animation-delay set inline
+  via --dmx-delay so a diagonal wave ripples through the grid once per cycle.
+  Inspired by the dot-matrix loader pattern at https://dotmatrix.zzzzshawn.cloud/.
+*/
+@keyframes dmx-wave {
+  0%,
+  100% {
+    opacity: var(--dmx-floor, 0.16);
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.dmx-dot {
+  animation: dmx-wave calc(var(--dmx-duration, 1.4s)) ease-in-out infinite;
+  animation-delay: var(--dmx-delay, 0s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dmx-dot {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+@keyframes glimpse-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes glimpse-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+@layer utilities {
+  .animate-glimpse-in {
+    animation: glimpse-in 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .animate-glimpse-out {
+    animation: glimpse-out 120ms cubic-bezier(0.4, 0, 1, 1);
   }
 }

@@ -1,18 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { GeistPixelSquare } from "geist/font/pixel";
+import Script from "next/script";
 import { SITE } from "@/lib/site";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
-
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist",
-  display: "swap",
-});
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
-});
 
 const title = `${SITE.name} — Download X (Twitter) Videos, Photos & GIFs`;
 
@@ -29,6 +22,17 @@ export const metadata: Metadata = {
   creator: SITE.author,
   publisher: SITE.author,
   category: "technology",
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/favicon.ico"],
+  },
+  manifest: "/site.webmanifest",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -60,28 +64,26 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#090909",
-  colorScheme: "dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
   width: "device-width",
   initialScale: 1,
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${geistMono.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable}`}
+      suppressHydrationWarning
     >
-      {/* NEVER EVER REMOVE THE BELOW LINE */}
-      <script
-        src="https://shield.auradevs.co/protect.js"
-        data-key="aura_9a9fec087f94e339fec789e7"
-        async
-      ></script>
-      <body className="min-h-screen bg-canvas font-sans text-ink antialiased selection:bg-white/20 [font-feature-settings:'cv01','cv05','cv11','ss03']">
-        {children}
+      <body className="min-h-screen bg-canvas font-sans text-ink antialiased selection:bg-ink selection:text-canvas">
+        <Script src="https://shield.auradevs.co/protect.js" data-key="aura_9a9fec087f94e339fec789e7" strategy="afterInteractive" />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

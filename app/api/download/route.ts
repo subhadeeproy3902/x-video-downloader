@@ -1,63 +1,73 @@
-import { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-// Streaming proxy so downloads are first-party, original-quality, and land
-// with a clean filename (a cross-origin <a download> can't rename or even
-// force a save). Locked to X's own media hosts so it can't be used as an
-// open proxy.
 export const runtime = "nodejs";
-export const maxDuration = 60;
 
-const ALLOWED_HOST = /(^|\.)twimg\.com$/i;
+// Only ever proxy X's own media CDNs. This is not an open proxy.
+const ALLOWED_HOSTS = new Set(["video.twimg.com", "pbs.twimg.com", "abs.twimg.com"]);
 
-function safeName(name: string, fallbackExt: string): string {
-  const cleaned = (name || "")
-    .replace(/[/\\?%*:|"<>\x00-\x1f]/g, "")
-    .replace(/\s+/g, "-")
-    .slice(0, 80)
-    .trim();
-  const base = cleaned || `riptweet-${Date.now()}`;
-  return /\.[a-z0-9]{2,4}$/i.test(base) ? base : `${base}.${fallbackExt}`;
+function sanitizeFilename(name: string): string {
+  return name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(0, 80) || "riptweet-download";
 }
 
-export async function GET(req: NextRequest) {
-  const target = req.nextUrl.searchParams.get("url");
-  const nameParam = req.nextUrl.searchParams.get("name") ?? "";
-  if (!target) return new Response("Missing url", { status: 400 });
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const target = searchParams.get("url");
+  const filename = sanitizeFilename(searchParams.get("name") ?? "riptweet-download");
+  // mode=inline is used for <video>/<img> playback (same-origin, no CORS or
+  // hotlink issues, and Range-aware so seeking works). mode=attachment (the
+  // default) forces a save-as download.
+  const inline = searchParams.get("mode") === "inline";
+
+  if (!target) {
+    return NextResponse.json({ error: "Missing url parameter." }, { status: 400 });
+  }
 
   let parsed: URL;
   try {
     parsed = new URL(target);
   } catch {
-    return new Response("Bad url", { status: 400 });
-  }
-  if (parsed.protocol !== "https:" || !ALLOWED_HOST.test(parsed.hostname)) {
-    return new Response("Forbidden host", { status: 403 });
+    return NextResponse.json({ error: "Invalid url parameter." }, { status: 400 });
   }
 
-  const upstream = await fetch(parsed.toString(), {
-    headers: { "User-Agent": "Mozilla/5.0", Referer: "https://x.com/" },
+  if (parsed.protocol !== "https:" || !ALLOWED_HOSTS.has(parsed.hostname)) {
+    return NextResponse.json({ error: "That host is not allowed." }, { status: 400 });
+  }
+
+  // Forward Range so <video> can seek and so Safari, which refuses to play
+  // video that isn't served with a proper 206 Partial Content response, works.
+  const range = request.headers.get("range");
+  const upstream = await fetch(parsed, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (compatible; RipTweet/2.0)",
+      ...(range ? { Range: range } : {}),
+    },
   });
-  if (!upstream.ok || !upstream.body) {
-    return new Response("Upstream error", { status: 502 });
+
+  if (!upstream.ok && upstream.status !== 206) {
+    return NextResponse.json({ error: "Could not fetch that file from X." }, { status: 502 });
+  }
+  if (!upstream.body) {
+    return NextResponse.json({ error: "X returned an empty response." }, { status: 502 });
   }
 
   const contentType = upstream.headers.get("content-type") ?? "application/octet-stream";
-  const ext = contentType.includes("mp4")
-    ? "mp4"
-    : contentType.includes("png")
-      ? "png"
-      : contentType.includes("jpeg") || contentType.includes("jpg")
-        ? "jpg"
-        : "bin";
-  const filename = safeName(nameParam, ext);
+  const contentLength = upstream.headers.get("content-length");
+  const contentRange = upstream.headers.get("content-range");
+  const extension = contentType.includes("mp4") ? "mp4" : contentType.includes("png") ? "png" : "jpg";
 
   const headers = new Headers({
     "Content-Type": contentType,
-    "Content-Disposition": `attachment; filename="${filename}"`,
-    "Cache-Control": "public, max-age=31536000, immutable",
+    "Accept-Ranges": "bytes",
+    "Cache-Control": inline ? "public, max-age=3600" : "private, max-age=0, no-store",
   });
-  const len = upstream.headers.get("content-length");
-  if (len) headers.set("Content-Length", len);
+  if (!inline) {
+    headers.set("Content-Disposition", `attachment; filename="${filename}.${extension}"`);
+  }
+  if (contentLength) headers.set("Content-Length", contentLength);
+  if (contentRange) headers.set("Content-Range", contentRange);
 
-  return new Response(upstream.body, { status: 200, headers });
+  return new NextResponse(upstream.body, {
+    status: upstream.status === 206 ? 206 : 200,
+    headers,
+  });
 }
