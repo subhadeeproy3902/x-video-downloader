@@ -38,8 +38,15 @@ export function extractTweetId(input: string): string | null {
   return null;
 }
 
-export function buildDownloadHref(remoteUrl: string, filenameSeed: string): string {
+export function buildDownloadHref(
+  remoteUrl: string,
+  filenameSeed: string,
+  mode: "inline" | "attachment" = "attachment",
+): string {
   const params = new URLSearchParams({ url: remoteUrl, name: filenameSeed });
+  if (mode === "inline") {
+    params.set("mode", "inline");
+  }
   return `/api/download?${params.toString()}`;
 }
 
