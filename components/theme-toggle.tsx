@@ -15,7 +15,12 @@ function ThemeToggleImpl({ className }: { className?: string }) {
   useEffect(() => setMounted(true), []);
 
   const toggle = useCallback(() => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+    const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
+    if (!document.startViewTransition) {
+      setTheme(nextTheme);
+      return;
+    }
+    document.startViewTransition(() => setTheme(nextTheme));
   }, [resolvedTheme, setTheme]);
 
   const isDark = mounted && resolvedTheme === "dark";

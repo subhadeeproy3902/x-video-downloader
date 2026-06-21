@@ -2,7 +2,7 @@ import { SITE } from "@/lib/site";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SHELL } from "@/lib/utils";
 import Logo from "./logo";
-import { GitHub } from "./github-logo";
+import GitHubStars from "./github-stars";
 
 export default function Nav() {
   return (
@@ -19,14 +19,7 @@ export default function Nav() {
         <div className="flex items-center gap-2.5">
           <ThemeToggle />
           {/* Github */}
-          <a
-            href="https://github.com/subhadeeproy3902/x-video-downloader"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="relative flex h-8 w-8 shrink-0 items-center justify-center border border-line text-ink transition-colors hover:border-line-strong hover:bg-surface-2 active:translate-y-px"
-          >
-            <GitHub className="absolute size-5 transition-all duration-200" />
-          </a>
+          <GitHubStars repo="subhadeeproy3902/x-video-downloader" />
           <a
             href="#downloader"
             className="hidden items-center border border-ink bg-ink px-4 py-2 font-mono text-[12px] uppercase tracking-wider text-canvas transition-opacity h-8 hover:opacity-90 active:translate-y-px sm:flex"
