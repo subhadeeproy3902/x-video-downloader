@@ -56,3 +56,5 @@ export function copyToClipboard(text: string): Promise<void> {
   }
   return Promise.reject(new Error("Clipboard API unavailable"));
 }
+
+export const SHELL = "mx-auto w-full max-w-5xl px-5 sm:px-8";

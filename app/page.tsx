@@ -1,4 +1,3 @@
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
   ClipboardPaste,
   MousePointerClick,
@@ -11,18 +10,17 @@ import {
   Globe,
   ShieldCheck,
   type LucideIcon,
-  Github,
 } from "lucide-react";
 import Downloader from "@/components/downloader/downloader";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Reveal } from "@/components/reveal";
-import { Glimpse, GlimpseContent, GlimpseDescription, GlimpseImage, GlimpseTitle, GlimpseTrigger } from "@/components/ui/glimpse";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import { glimpse } from "@/lib/glimpse-fetch";
-import { SITE, CREATORS } from "@/lib/site";
 import { STEPS, ASSET_TYPES, FEATURES, FAQ } from "@/lib/content";
-
-const SHELL = "mx-auto w-full max-w-5xl px-5 sm:px-8";
+import { StructuredData } from "@/components/shared/structured-data";
+import Nav from "@/components/shared/nav";
+import { SHELL } from "@/lib/utils";
+import { DotMark } from "@/components/shared/dotmark";
+import Section from "@/components/shared/section";
+import { Footer } from "@/components/shared/footer";
 
 /** Icons for the "how it works" steps, indexed to STEPS. */
 const STEP_ICONS: LucideIcon[] = [ClipboardPaste, MousePointerClick, Download];
@@ -184,136 +182,6 @@ export default function Home() {
   );
 }
 
-/* ---------------- layout pieces ---------------- */
-
-function Nav() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-line bg-canvas/85 backdrop-blur-sm">
-      <div className={`${SHELL} flex h-14 items-center justify-between`}>
-        <a href="#top" className="flex items-center gap-2.5" aria-label={`${SITE.name} home`}>
-          <Logo />
-          <span className="font-pixel text-[0.95rem] tracking-tight text-ink">{SITE.name}</span>
-        </a>
-        <nav aria-label="Main navigation" className="hidden items-center gap-6 font-mono text-[12px] uppercase tracking-[0.05em] text-ink-muted sm:flex">
-          <a href="#how" className="transition-colors hover:text-ink">How it works</a>
-          <a href="#faq" className="transition-colors hover:text-ink">FAQ</a>
-        </nav>
-        <div className="flex items-center gap-2.5">
-          <ThemeToggle />
-          {/* Github */}
-          <a
-            href="https://github.com/subhadeeproy3902/x-video-downloader"
-            target="_blank"
-            rel="noreferrer noopener"
-            className="relative flex h-8 w-8 shrink-0 items-center justify-center border border-line text-ink transition-colors hover:border-line-strong hover:bg-surface-2 active:translate-y-px"
-          >
-            <Github className="absolute h-[15px] w-[15px] transition-all duration-200" />
-          </a>
-          <a
-            href="#downloader"
-            className="hidden items-center border border-ink bg-ink px-4 py-2 font-mono text-[12px] uppercase tracking-[0.05em] text-canvas transition-opacity h-8 hover:opacity-90 active:translate-y-px sm:flex"
-          >
-            Paste a link
-          </a>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-async function Footer() {
-  return (
-    <footer className="border-t border-line">
-      <div className={`${SHELL} py-14`}>
-        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
-          <div className="max-w-xs">
-            <div className="flex items-center gap-2.5">
-              <Logo />
-              <span className="font-pixel text-[0.95rem] tracking-tight text-ink">{SITE.name}</span>
-            </div>
-            <p className="mt-4 text-[13px] leading-relaxed text-ink-muted">
-              Download X videos, photos, and GIFs in original quality. No account, no watermark, no hassle.
-            </p>
-          </div>
-
-          <nav aria-label="Footer navigation" className="flex gap-16 font-mono text-[12px]">
-            <div className="flex flex-col gap-3">
-              <span className="text-ink-faint uppercase tracking-[0.06em]">Product</span>
-              <a href="#downloader" className="text-ink-muted transition-colors hover:text-ink">Downloader</a>
-              <a href="#how" className="text-ink-muted transition-colors hover:text-ink">How it works</a>
-              <a href="#faq" className="text-ink-muted transition-colors hover:text-ink">FAQ</a>
-            </div>
-            <div className="flex flex-col gap-3">
-              <span className="text-ink-faint uppercase tracking-[0.06em]">Saves</span>
-              <span className="text-ink-muted">X videos (MP4)</span>
-              <span className="text-ink-muted">Full-res photos</span>
-              <span className="text-ink-muted">Animated GIFs</span>
-            </div>
-          </nav>
-
-          <div className="flex flex-col gap-3">
-            <span className="font-mono text-[12px] uppercase tracking-[0.06em] text-ink-faint">Built by</span>
-            <div className="flex flex-col gap-2.5">
-              {await Promise.all(CREATORS.map(async (creator) => <CreatorGlimpse key={creator.handle} creator={creator} />))}
-            </div>
-          </div>
-        </div>
-
-        <div className="my-10 h-px bg-line" />
-
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="max-w-2xl text-[12px] leading-relaxed text-ink-faint">
-            {SITE.name} is an independent tool and is not affiliated with, endorsed by, or sponsored by X Corp. Only
-            download content you have the right to use.
-          </p>
-          <p className="shrink-0 font-mono text-[12px] text-ink-faint">
-            © {new Date().getFullYear()} {SITE.name}
-          </p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-async function CreatorGlimpse({ creator }: { creator: (typeof CREATORS)[number] }) {
-  const data = await glimpse(creator.url);
-  return (
-    <Glimpse openDelay={150} closeDelay={80}>
-      <GlimpseTrigger asChild>
-        <a
-          href={creator.url}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="flex items-center gap-2 text-[13px] text-ink-muted transition-colors hover:text-ink"
-        >
-          <GitHubLogoIcon className="h-3.5 w-3.5" aria-hidden="true" />
-          {creator.name}
-        </a>
-      </GlimpseTrigger>
-      <GlimpseContent>
-        {data.image && <GlimpseImage src={data.image} alt="" />}
-        <GlimpseTitle>{data.title ?? creator.name}</GlimpseTitle>
-        <GlimpseDescription>{data.description ?? `@${creator.handle} on GitHub`}</GlimpseDescription>
-      </GlimpseContent>
-    </Glimpse>
-  );
-}
-
-function Section({ id, title, children }: { id?: string; title: string; children: React.ReactNode }) {
-  return (
-    <section id={id} className={`${SHELL} scroll-mt-20 border-t border-line py-16 sm:py-20`}>
-      <div className="mb-8 flex items-center gap-3">
-        <DotMark />
-        <h2 className="font-pixel text-[clamp(1.25rem,2.4vw,1.7rem)] tracking-tight text-ink">{title}</h2>
-      </div>
-      {children}
-    </section>
-  );
-}
-
-/* ---------------- marks ---------------- */
-
-/** Faint ambient dot-grid behind the hero, a single SVG pattern (cheap), not decorative DOM bloat. */
 function HeroDotField() {
   return (
     <svg
@@ -336,81 +204,4 @@ function HeroDotField() {
       <rect width="420" height="420" fill="url(#hero-dots)" mask="url(#hero-mask)" />
     </svg>
   );
-}
-
-/** A static 5-dot fading row, used as a section marker instead of an eyebrow label. */
-function DotMark() {
-  return (
-    <span className="flex items-center gap-1" aria-hidden="true">
-      {[1, 0.7, 0.45, 0.25, 0.12].map((o, i) => (
-        <span key={i} className="h-1 w-1 bg-ink" style={{ opacity: o }} />
-      ))}
-    </span>
-  );
-}
-
-function Logo() {
-  return (
-    <img src="/logo.png" alt="" className="h-7 w-7" width={24} height={24} />
-  );
-}
-
-/* ---------------- structured data (SEO / AEO / AIO) ---------------- */
-
-function StructuredData() {
-  const graph = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        "@id": `${SITE.url}/#app`,
-        name: SITE.name,
-        url: SITE.url,
-        description: SITE.description,
-        applicationCategory: "MultimediaApplication",
-        operatingSystem: "Any (web browser)",
-        browserRequirements: "Requires JavaScript",
-        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-        featureList: [
-          "Download X (Twitter) videos as MP4, original resolution",
-          "Download full-resolution photos",
-          "Download animated GIFs as looping MP4",
-          "No watermark, no account, no app install",
-          "Shows only the media asset, not the surrounding post",
-        ],
-      },
-      {
-        "@type": "WebSite",
-        "@id": `${SITE.url}/#website`,
-        url: SITE.url,
-        name: SITE.name,
-        description: SITE.description,
-        publisher: { "@id": `${SITE.url}/#org` },
-      },
-      {
-        "@type": "Organization",
-        "@id": `${SITE.url}/#org`,
-        name: SITE.name,
-        url: SITE.url,
-        logo: `${SITE.url}/logo.png`,
-      },
-      {
-        "@type": "HowTo",
-        name: "How to download a video, photo, or GIF from X (Twitter)",
-        description: "Save X media to your device in three steps with RipTweet.",
-        totalTime: "PT5S",
-        step: STEPS.map((s) => ({ "@type": "HowToStep", position: Number(s.n), name: s.title, text: s.body })),
-      },
-      {
-        "@type": "FAQPage",
-        "@id": `${SITE.url}/#faq`,
-        mainEntity: FAQ.map((f) => ({
-          "@type": "Question",
-          name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a },
-        })),
-      },
-    ],
-  };
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }} />;
 }

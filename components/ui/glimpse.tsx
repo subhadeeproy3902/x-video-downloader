@@ -43,7 +43,7 @@ export function GlimpseImage({ className, alt, ...props }: GlimpseImageProps) {
   return (
     <img
       alt={alt ?? ""}
-      className={cn("mb-3 aspect-[120/63] w-full border border-line object-cover grayscale", className)}
+      className={cn("mb-3 aspect-[120/63] w-full border border-line object-cover", className)}
       loading="lazy"
       {...props}
     />
