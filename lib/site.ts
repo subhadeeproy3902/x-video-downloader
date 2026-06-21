@@ -1,10 +1,10 @@
 export const SITE = {
   name: "RipTweet",
-  url: "https://rip-tweet.vercel.app",
+  url: "https://riptweet.netlify.app",
   description:
     "Download videos, photos, and GIFs from X (Twitter) in original quality. Paste a post link, get the file. No app, no account, no watermark.",
-  author: "RipTweet",
-  twitterHandle: "@riptweet",
+  author: "Subhadeep Roy & Khushi Chetule",
+  twitterHandle: "@mvp_Subha",
   keywords: [
     "download twitter video",
     "download x video",

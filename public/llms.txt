@@ -30,4 +30,4 @@
 - "Can I pick the video quality?" → Yes, when X offers more than one resolution.
 
 ## Links
-- Homepage: https://rip-tweet.vercel.app
+- Homepage: https://riptweet.netlify.app
