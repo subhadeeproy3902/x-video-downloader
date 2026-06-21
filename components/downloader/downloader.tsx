@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useReducer, useRef } from "react";
-import { ExclamationTriangleIcon, Link2Icon } from "@radix-ui/react-icons";
+import {
+  TriangleAlert as ExclamationTriangleIcon,
+  Link2 as Link2Icon,
+} from "lucide-react";
 import type { ResolveResponse, ResolvedPost } from "@/lib/types";
 import { extractTweetId } from "@/lib/utils";
 import { RipLoader } from "@/components/ui/loader";

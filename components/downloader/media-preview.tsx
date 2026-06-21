@@ -1,7 +1,14 @@
 "use client";
 
 import { memo, useCallback, useRef, useState } from "react";
-import { CheckIcon, DownloadIcon, ExclamationTriangleIcon, ImageIcon, PlayIcon, VideoIcon } from "@radix-ui/react-icons";
+import {
+  Check as CheckIcon,
+  Download as DownloadIcon,
+  TriangleAlert as ExclamationTriangleIcon,
+  Image as ImageIcon,
+  Play as PlayIcon,
+  Video as VideoIcon,
+} from "lucide-react";
 import type { ResolvedAsset, VideoVariant } from "@/lib/types";
 import { buildDownloadHref, cn, formatDuration } from "@/lib/utils";
 

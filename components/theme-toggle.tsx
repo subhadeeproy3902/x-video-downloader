@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function ThemeToggleImpl({ className }: { className?: string }) {
@@ -31,13 +31,13 @@ function ThemeToggleImpl({ className }: { className?: string }) {
         className,
       )}
     >
-      <SunIcon
+      <Sun
         className={cn(
           "absolute h-[15px] w-[15px] transition-all duration-200",
           mounted && isDark ? "scale-50 opacity-0" : "scale-100 opacity-100",
         )}
       />
-      <MoonIcon
+      <Moon
         className={cn(
           "absolute h-[15px] w-[15px] transition-all duration-200",
           mounted && isDark ? "scale-100 opacity-100" : "scale-50 opacity-0",
