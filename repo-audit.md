@@ -84,7 +84,7 @@ lib/                           # Shared business logic & content
 utils/                         # Client-side utilities
 ├── downloader.tsx             # Main interactive component (form + results)
 public/                        # Static assets
-├── logo.svg                   # Brand logo
+├── logo.png                   # Brand logo
 ├── llms.txt                   # LLM guidelines file
 package.json                   # Dependencies
 tsconfig.json                  # TypeScript configuration
@@ -355,7 +355,7 @@ type ExtractError =
 
 | File | Purpose |
 |------|---------|
-| `public/logo.svg` | Brand logo (30x30) |
+| `public/logo.png` | Brand logo (30x30) |
 | `public/llms.txt` | LLM crawling guidelines |
 | `app/icon.svg` | Favicon/app icon |
 

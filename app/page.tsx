@@ -392,7 +392,7 @@ function StructuredData() {
         "@id": `${SITE.url}/#org`,
         name: SITE.name,
         url: SITE.url,
-        logo: `${SITE.url}/logo.svg`,
+        logo: `${SITE.url}/logo.png`,
       },
       {
         "@type": "HowTo",
