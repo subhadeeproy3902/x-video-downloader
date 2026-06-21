@@ -129,7 +129,7 @@ function MediaPreviewImpl({ asset, filenameSeed, position, total }: MediaPreview
   const showPlayButton = asset.kind === "video" && !isPlaying;
 
   return (
-    <div className="group border border-line bg-surface-1 transition-colors duration-150 hover:border-line-strong">
+    <div className="group border border-line bg-surface-1 h-fit transition-colors duration-150 hover:border-line-strong">
       <div
         className="relative flex w-full items-center justify-center overflow-hidden bg-black"
         style={{ aspectRatio, maxHeight: "70vh" }}
