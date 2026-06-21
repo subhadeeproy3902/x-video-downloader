@@ -41,6 +41,7 @@ export async function GET(request: Request) {
       "User-Agent": "Mozilla/5.0 (compatible; RipTweet/2.0)",
       ...(range ? { Range: range } : {}),
     },
+    cache: "no-store",
   });
 
   if (!upstream.ok && upstream.status !== 206) {
@@ -55,10 +56,19 @@ export async function GET(request: Request) {
   const contentRange = upstream.headers.get("content-range");
   const extension = contentType.includes("mp4") ? "mp4" : contentType.includes("png") ? "png" : "jpg";
 
+  // IMPORTANT: this response can be a 206 Partial Content slice driven by
+  // whatever Range header the *current* request happened to send (e.g. the
+  // tiny metadata-probe range <video preload="metadata"> fires on mount).
+  // It must never be marked public/cacheable — a CDN that caches one
+  // request's byte range and replays it for a later request asking for a
+  // different range (or the full file) will hand back corrupt/truncated
+  // data. There's also no real upside to caching here: X's own CDN already
+  // caches these files, we're just relaying bytes.
   const headers = new Headers({
     "Content-Type": contentType,
     "Accept-Ranges": "bytes",
-    "Cache-Control": inline ? "public, max-age=3600" : "private, max-age=0, no-store",
+    "Cache-Control": "private, no-store",
+    Vary: "Range",
   });
   if (!inline) {
     headers.set("Content-Disposition", `attachment; filename="${filename}.${extension}"`);
